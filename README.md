@@ -126,9 +126,9 @@ npm run test:e2e
 
 ## 📞 Voice Agent Telephony Specs
 
-- **Inbound US Phone Number**: Configured via Vapi.ai with Twilio carrier integration.
-- **LLM Reasoning**: Google Gemini 1.5 Flash via Vapi orchestrator.
-- **Tool Functions Exposed via Webhook**:
+- **Inbound US Phone Number**: Configured via Vapi.ai with Twilio carrier integration (`+1 (571) 364-0246`).
+- **LLM Reasoning**: OpenAI GPT-4o-mini via Vapi orchestrator.
+- **Transcriber**: Deepgram Nova-3 with custom acoustic keyword boosting.
   1. `checkExistingPatient(phone_number)`: Queries Atlas database by caller ID. If found, retrieves name and existing records.
   2. `registerPatient(...)`: Collects all 17 demographic fields and creates new patient record with conflict checks.
   3. `scheduleAppointment(...)`: Schedules appointments linked to the patient record.
