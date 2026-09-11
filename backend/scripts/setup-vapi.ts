@@ -12,7 +12,19 @@
  */
 
 import axios from 'axios';
+import * as dotenv from 'dotenv';
+import * as fs from 'fs';
+import * as path from 'path';
 import { getAssistantConfig } from '../src/resources/vapi/prompts/system-prompt';
+
+const envDevPath = path.resolve(__dirname, '../env/.env.development');
+if (fs.existsSync(envDevPath)) {
+  dotenv.config({ path: envDevPath });
+}
+const envProdPath = path.resolve(__dirname, '../env/.env.production');
+if (fs.existsSync(envProdPath)) {
+  dotenv.config({ path: envProdPath });
+}
 
 async function main() {
   const vapiApiKey = process.env.VAPI_API_KEY;
@@ -70,7 +82,7 @@ async function main() {
 
     console.log(`🆔 Assistant ID: ${assistantData.id}`);
 
-    // Try to list phone numbers
+    // Try to list and link phone numbers
     try {
       const phoneRes = await axios.get('https://api.vapi.ai/phone-number', {
         headers: { Authorization: `Bearer ${vapiApiKey}` },
@@ -80,10 +92,21 @@ async function main() {
         console.log('\n📞 Available Phone Numbers in your Vapi Account:');
         for (const num of numbers) {
           console.log(`   • ${num.number || num.id} (Current Assistant: ${num.assistantId || 'None'})`);
+          if (num.assistantId !== assistantData.id) {
+            console.log(`     🔗 Linking phone number ${num.number || num.id} to Assistant ${assistantData.id}...`);
+            await axios.patch(
+              `https://api.vapi.ai/phone-number/${num.id}`,
+              { assistantId: assistantData.id },
+              { headers: { Authorization: `Bearer ${vapiApiKey}` } }
+            );
+            console.log(`     ✅ Phone number successfully bound!`);
+          } else {
+            console.log(`     ✅ Already bound to this Assistant!`);
+          }
         }
       }
-    } catch {
-      // ignore phone listing error
+    } catch (phoneErr: any) {
+      console.warn('⚠️ Phone number auto-link warning:', phoneErr.message);
     }
 
     console.log('\n📋 Next Steps:');
