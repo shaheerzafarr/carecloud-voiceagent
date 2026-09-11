@@ -269,7 +269,7 @@ export function getAssistantConfig() {
       "Hi, thank you for calling CareCloud Medical Center! My name is Sarah. I'd be happy to help you get registered as a new patient. This will just take a few minutes. Let's start — what's your first and last name?",
     transcriber: {
       provider: 'deepgram',
-      model: 'nova-2',
+      model: 'nova-3',
       language: 'en-US',
       smartFormat: true,
       keywords: [
@@ -287,14 +287,15 @@ export function getAssistantConfig() {
         'Florida:4',
         'Orlando:4',
         'Miami:4',
+        'April:4',
         'Aetna:3',
         'Medicare:3',
         'September:3',
       ],
-      endpointing: 500,
+      endpointing: 400,
     },
     startSpeakingPlan: {
-      waitSeconds: 0.8,
+      waitSeconds: 0.4,
       smartEndpointingPlan: {
         provider: 'vapi',
       },
