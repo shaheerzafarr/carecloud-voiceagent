@@ -45,6 +45,9 @@ async function bootstrap() {
 
   app.use(cookieParser());
   app.use(compression());
+  const express = require('express');
+  app.use(express.json({ limit: '50mb' }));
+  app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
   app.setGlobalPrefix(configService.get('API_PREFIX') || 'api/v1', {
     exclude: ['dashboard', 'dashboard/*path'],

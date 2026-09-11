@@ -18,6 +18,39 @@ import { CreatePatientDto } from '../patients/dto/create-patient.dto';
 /**
  * Helper to sanitize phone numbers to 10 digits
  */
+const US_STATE_MAP: Record<string, string> = {
+  alabama: 'AL', alaska: 'AK', arizona: 'AZ', arkansas: 'AR', california: 'CA',
+  colorado: 'CO', connecticut: 'CT', delaware: 'DE', florida: 'FL', georgia: 'GA',
+  hawaii: 'HI', idaho: 'ID', illinois: 'IL', indiana: 'IN', iowa: 'IA',
+  kansas: 'KS', kentucky: 'KY', louisiana: 'LA', maine: 'ME', maryland: 'MD',
+  massachusetts: 'MA', michigan: 'MI', minnesota: 'MN', mississippi: 'MS', missouri: 'MO',
+  montana: 'MT', nebraska: 'NE', nevada: 'NV', 'new hampshire': 'NH', 'new jersey': 'NJ',
+  'new mexico': 'NM', 'new york': 'NY', 'north carolina': 'NC', 'north dakota': 'ND',
+  ohio: 'OH', oklahoma: 'OK', oregon: 'OR', pennsylvania: 'PA', 'rhode island': 'RI',
+  'south carolina': 'SC', 'south dakota': 'SD', tennessee: 'TN', texas: 'TX',
+  utah: 'UT', vermont: 'VT', virginia: 'VA', washington: 'WA', 'west virginia': 'WV',
+  wisconsin: 'WI', wyoming: 'WY', 'district of columbia': 'DC',
+};
+
+function normalizeState(state: string | undefined): string {
+  if (!state) return '';
+  const trimmed = state.trim();
+  if (trimmed.length === 2) return trimmed.toUpperCase();
+  const lower = trimmed.toLowerCase();
+  return US_STATE_MAP[lower] || trimmed.toUpperCase();
+}
+
+function normalizeDob(dob: string | undefined): string {
+  if (!dob) return '';
+  const m = dob.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (m) {
+    const month = m[1].padStart(2, '0');
+    const day = m[2].padStart(2, '0');
+    return `${m[3]}-${month}-${day}`;
+  }
+  return dob;
+}
+
 function sanitizePhoneNumber(phone: string | undefined): string {
   if (!phone) return '';
   const digits = phone.replace(/\D/g, '');
@@ -217,7 +250,17 @@ export class VapiService {
       else if (s.includes('decline')) args.sex = 'Decline to Answer';
     }
 
-    // 3. Server-side validation against CreatePatientDto per PDF requirement
+    // 3. State normalization (handles "Florida" -> "FL")
+    if (args.state) {
+      args.state = normalizeState(args.state);
+    }
+
+    // 4. DOB normalization (handles MM/DD/YYYY -> YYYY-MM-DD)
+    if (args.date_of_birth) {
+      args.date_of_birth = normalizeDob(args.date_of_birth);
+    }
+
+    // 5. Server-side validation against CreatePatientDto per PDF requirement
     const dto = plainToInstance(CreatePatientDto, args);
     const errors = await validate(dto);
     if (errors.length > 0) {
@@ -266,6 +309,12 @@ export class VapiService {
       updateData.emergency_contact_phone = sanitizePhoneNumber(
         updateData.emergency_contact_phone,
       );
+    }
+    if (updateData.state) {
+      updateData.state = normalizeState(updateData.state);
+    }
+    if (updateData.date_of_birth) {
+      updateData.date_of_birth = normalizeDob(updateData.date_of_birth);
     }
 
     const patient = await this.patientService.updatePatient(patient_id, updateData);
