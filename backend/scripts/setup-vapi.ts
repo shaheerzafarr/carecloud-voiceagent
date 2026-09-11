@@ -32,7 +32,9 @@ async function main() {
 
   const assistantPayload = {
     ...VAPI_ASSISTANT_CONFIG,
-    serverUrl: webhookUrl,
+    server: {
+      url: webhookUrl,
+    },
   };
 
   const assistantId = process.env.VAPI_ASSISTANT_ID;

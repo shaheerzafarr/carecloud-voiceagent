@@ -12,7 +12,7 @@ const state = {
   searchQuery: '',
   filterGender: '',
   filterInsurance: '',
-  inboundPhoneNumber: '+1 (555) 706-7122',
+  inboundPhoneNumber: '+1 (571) 364-0246',
 };
 
 // DOM Elements

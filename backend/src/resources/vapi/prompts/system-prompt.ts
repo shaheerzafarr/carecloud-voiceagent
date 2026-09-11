@@ -257,8 +257,8 @@ export const VAPI_TOOLS = [
 export const VAPI_ASSISTANT_CONFIG = {
   name: 'CareCloud Patient Registration Agent',
   model: {
-    provider: 'google',
-    model: 'gemini-2.0-flash',
+    provider: 'openai',
+    model: 'gpt-4o-mini',
     messages: [
       {
         role: 'system',
@@ -276,7 +276,6 @@ export const VAPI_ASSISTANT_CONFIG = {
   },
   firstMessage:
     "Hi, thank you for calling CareCloud Medical Center! My name is Sarah. I'd be happy to help you get registered as a new patient. This will just take a few minutes. Let's start — what's your first and last name?",
-  endCallFunctionEnabled: true,
   transcriber: {
     provider: 'deepgram',
     model: 'nova-2',
