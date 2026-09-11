@@ -6,9 +6,9 @@ import { SEX } from '../resources/patients/enums/patient.enum';
 const logger = new Logger('PatientSeed');
 
 export const patientSeed = async (patientModel: Model<Patient>): Promise<void> => {
-  const existingCount = await patientModel.countDocuments();
+  const existingCount = await patientModel.countDocuments({ deleted_at: null });
   if (existingCount > 0) {
-    logger.log('Patients already seeded. Skipping.');
+    logger.log('Active patients already present. Skipping seed.');
     return;
   }
 

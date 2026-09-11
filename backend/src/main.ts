@@ -32,10 +32,12 @@ async function bootstrap() {
     if (req.path === '/' || req.path === '') {
       return res.redirect('/dashboard');
     }
-    // Transparently rewrite unprefixed /patients and /vapi calls to /api/v1
+    // Transparently rewrite unprefixed /patients, /vapi, and /appointments calls to /api/v1
     if (req.url.startsWith('/patients')) {
       req.url = `/api/v1${req.url}`;
     } else if (req.url.startsWith('/vapi')) {
+      req.url = `/api/v1${req.url}`;
+    } else if (req.url.startsWith('/appointments')) {
       req.url = `/api/v1${req.url}`;
     }
     next();

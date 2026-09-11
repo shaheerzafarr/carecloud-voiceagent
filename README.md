@@ -1,157 +1,122 @@
-# CareCloud Voice AI Agent — Patient Registration System
+# CareCloud Voice AI Agent — Patient Registration & Clinical Portal
 
-A production-grade **Voice AI Agent** built for CareCloud's technical assessment. The system collects U.S. patient demographic information through natural telephone conversation, persists structured data to MongoDB Atlas, and exposes the records via a NestJS REST API and a real-time server-rendered Web Dashboard.
-
----
-
-## 🚀 Key Features
-
-- **Telephony & Voice AI Integration**: Powered by [Vapi.ai](https://vapi.ai) with a real U.S. phone number.
-- **Natural Conversational Flow**: Powered by **Google Gemini 1.5 Flash** (completely free tier) acting as an empathetic patient intake coordinator.
-- **Full Patient Demographic Model**: Stores all 17 standard fields required by CareCloud (First Name, Middle Name, Last Name, DOB, Sex, Phone, Email, Address 1 & 2, City, State, Zip, Emergency Contact Name, Relationship, Phone, Insurance Provider, Policy #).
-- **Duplication & Validation Safeguards**: Detects existing patients by phone number, validates names, DOBs, ZIP codes, and state abbreviations.
-- **RESTful API**: Full CRUD endpoints (`GET`, `POST`, `PUT`, `DELETE`) with query filters (`last_name`, `date_of_birth`, `phone_number`).
-- **Live Patient Dashboard**: Built with EJS templates & modern dark CSS styling for real-time monitoring of registered patients.
-- **Bonus Features Included**:
-  - **Appointment Scheduling Tool**: Voice agent can schedule appointments during the same call.
-  - **Call Transcripts & Audio Recordings**: Full transcript and call metrics saved per patient.
-  - **1-Click Vapi Provisioning Script**: Automated tool definition and prompt deployment to Vapi.
+A production-ready **Voice AI Telephony & Patient Intake System** designed for the CareCloud technical assessment. The system conducts conversational intake with patients over a live U.S. telephone line, captures all 17 required demographic and insurance fields, performs duplicate detection, persists records into MongoDB Atlas, and provides an ultra-premium Web Dashboard for clinical staff.
 
 ---
 
-## 🛠️ Architecture & Tech Stack
+## 🏗️ Repository Architecture
 
-| Component | Technology | Cost Tier |
-|---|---|---|
-| **Telephony & Voice Orchestration** | Vapi.ai | Free ($10 free trial credits included) |
-| **LLM Reasoning Engine** | Google Gemini 1.5 Flash | Free (Google AI Studio key) |
-| **Backend Framework** | NestJS (Node.js) | Open Source |
-| **Database** | MongoDB Atlas | Free (M0 Shared Cluster) |
-| **Web Dashboard** | Express + EJS Views + Vanilla CSS | Open Source |
-| **Deployment / Hosting** | Render / Docker | Free Tier |
-
----
-
-## 📁 Repository Structure
+The project is cleanly decoupled into two focused directories:
 
 ```text
 carecloud-voiceagent/
-├── backend/
+├── backend/                           # NestJS REST API & Voice Agent Engine
+│   ├── env/
+│   │   ├── .env.development           # Clean minimal dev credentials
+│   │   ├── .env.production            # Production environment template
+│   │   └── .env.test                  # Automated test environment
 │   ├── src/
-│   │   ├── main.ts                    # NestJS entry point & view engine setup
-│   │   ├── app.module.ts              # Root application module
 │   │   ├── resources/
-│   │   │   ├── patients/              # Patient Entity, DTOs, Repository, Service, Controller
-│   │   │   ├── vapi/                  # Vapi webhook handler, system prompt & tool specs
-│   │   │   ├── call-logs/             # Transcripts & call history repository
-│   │   │   ├── appointments/          # Appointment scheduling resource
-│   │   │   └── dashboard/             # EJS Dashboard controller & routing
-│   │   └── seeds/                     # Database seeders (Admin, Roles, Patients)
-│   ├── views/                         # Server-rendered EJS templates (layout, dashboard, detail)
-│   ├── public/css/                    # Custom CSS styling (dark mode, dynamic animations)
-│   ├── scripts/setup-vapi.ts          # Script to provision Vapi Voice Assistant
-│   └── Dockerfile                     # Production container spec
-├── render.yaml                        # Render 1-click deployment blueprint
-└── README.md                          # Comprehensive documentation
+│   │   │   ├── patients/              # All 17 demographic fields, CRUD, duplicate detection
+│   │   │   ├── appointments/          # Appointment scheduling & patient linkage
+│   │   │   ├── call-logs/             # Transcripts & call session recordings
+│   │   │   ├── dashboard/             # REST aggregate endpoints & legacy EJS views
+│   │   │   └── vapi/                  # Vapi webhook dispatcher & tool call execution
+│   │   ├── seeds/                     # Automated patient seeder (John Smith, Carlos, Emily)
+│   │   └── main.ts                    # NestJS bootstrapper, CORS, dual-routing middleware
+│   └── test/                          # Comprehensive Jest E2E integration test suite
+│
+├── frontend/                          # Standalone Modern Clinical Web Dashboard
+│   ├── index.html                     # Semantic HTML5 clinical portal layout
+│   ├── vite.config.js                 # Reverse proxy mapping /api & /patients to backend
+│   ├── package.json                   # Vite dev server & production bundler
+│   └── src/
+│       ├── style.css                  # Glassmorphism dark medical theme & micro-animations
+│       └── app.js                     # Live search, filters, slide-over drawer, modals
+│
+└── README.md                          # Architecture & setup guide
 ```
 
 ---
 
-## ⚙️ Environment Configuration
+## ⚙️ Minimal Environment Configuration
 
-Create a `.env.development` file inside `backend/env/`:
+All unnecessary third-party keys (AWS, Stripe, SMTP, JWT) have been removed. Only the variables needed for this assessment are kept:
+
+Inside `backend/env/.env.development`:
 
 ```env
 PORT=5006
 API_PREFIX=api/v1
-MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/carecloud-voiceagent
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/carecloud-voiceagent?retryWrites=true&w=majority
+MONGODB_PASSWORD=your_atlas_db_password
 VAPI_API_KEY=your_vapi_private_api_key
-GEMINI_API_KEY=your_google_ai_studio_gemini_key
+VAPI_ASSISTANT_ID=your_vapi_assistant_uuid
+GEMINI_API_KEY=your_gemini_api_key
 WEB_HOSTED_URL=http://localhost:5006
+API_HOSTED_URL=http://localhost:5006
 ```
 
 ---
 
-## 🏃 Local Setup & Running
+## 🏃 Quick Start Guide
 
-### 1. Install Dependencies
+### 1. Run the Backend API
+
 ```bash
 cd backend
 npm install
+npm run seed        # Seeds active test patients
+npm run start:dev   # Runs NestJS on http://localhost:5006
 ```
 
-### 2. Seed Database
-Populate sample data for immediate dashboard viewing:
+- **Swagger Documentation**: [http://localhost:5006/docs](http://localhost:5006/docs)
+- **Direct Patients API**: [http://localhost:5006/api/v1/patients](http://localhost:5006/api/v1/patients)
+- **Dashboard Stats**: [http://localhost:5006/dashboard/stats](http://localhost:5006/dashboard/stats)
+
+### 2. Run the Standalone Frontend Dashboard
+
 ```bash
-npm run seed
+cd frontend
+npm install
+npm run dev         # Launches Vite dashboard on http://localhost:3000
 ```
 
-### 3. Start Development Server
-```bash
-npm run start:dev
-```
-Access points:
-- **Dashboard**: [http://localhost:5006/dashboard](http://localhost:5006/dashboard)
-- **API Base**: [http://localhost:5006/api/v1/patients](http://localhost:5006/api/v1/patients)
-- **Swagger Docs**: [http://localhost:5006/docs](http://localhost:5006/docs)
+Open [http://localhost:3000](http://localhost:3000) in your browser:
+- **Live Search & Filter**: Search patients in real time by name, phone, or email.
+- **Slide-Over Chart Drawer**: Click any patient row to open a full clinical chart displaying all 17 demographic fields, scheduled appointments, and voice call transcripts.
+- **Register Patient Modal**: Manually test patient creation with instant validation and duplicate phone detection.
+- **Schedule Appointment**: Link appointments to patient UUIDs directly from the dashboard.
 
 ---
 
-## 📞 Vapi Setup Guide (Connecting Phone Number)
+## 🧪 Automated Testing
 
-1. **Sign Up on Vapi**: Go to [vapi.ai](https://vapi.ai) and sign up (gives $10 free credits).
-2. **Buy a Phone Number**: In Vapi Dashboard -> **Phone Numbers** -> **Buy Phone Number** (Select US Number).
-3. **Provision Assistant**: Run the automated setup script to deploy the prompt and function tools:
-   ```bash
-   export VAPI_API_KEY="your-vapi-api-key"
-   npm run setup:vapi https://your-app.railway.app
-   ```
-4. **Assign Assistant**: In Vapi Dashboard -> Phone Numbers -> Select your US phone number -> Set **Assistant** to the newly provisioned assistant.
+The backend includes a comprehensive end-to-end integration test suite verifying every requirement:
 
----
-
-## 📡 REST API Documentation
-
-The REST API supports both direct root paths (e.g., `/patients`) and prefixed paths (`/api/v1/patients`) for maximum flexibility:
-
-### **Patients Endpoints** (`/patients` & `/api/v1/patients`)
-
-- **`GET /patients`** (or `/api/v1/patients`): List all registered patients.
-  - Query parameters: `?last_name=Smith&date_of_birth=1985-06-15&phone_number=5551234567`
-  - Response envelope: `{ "data": [...], "total": 3, "error": null }`
-- **`GET /patients/:id`**: Retrieve a single patient by UUID (`patient_id`).
-- **`POST /patients`**: Create a new patient record with full server-side validation.
-  - Validates names, 10-digit US phone, non-future date of birth, sex enum, 2-letter state, and ZIP format.
-  - Returns `409 Conflict` if phone number already exists (Duplicate Detection).
-- **`PUT /patients/:id`**: Partial update to an existing patient record.
-- **`DELETE /patients/:id`**: Soft-delete a patient record (`deleted_at` timestamp set; record excluded from active queries).
-
-### **Vapi Voice Webhook Endpoint** (`/vapi/webhook` & `/api/v1/vapi/webhook`)
-
-- **`POST /vapi/webhook`**: Receives Vapi tool execution requests and call completion reports:
-  - `checkExistingPatient`: Duplicate detection by phone number before registration.
-  - `createPatient`: Saves the confirmed patient record after caller confirms details.
-  - `updatePatient`: Updates information for returning callers.
-  - `scheduleAppointment`: Books a first appointment for newly registered callers.
-  - `end-of-call-report`: Saves complete call transcript, call duration, and summary.
-
----
-
-## 🚢 Deployment (Render & Docker)
-
-### Render (Blueprint)
-1. Push this repository to GitHub.
-2. Log into [Render.com](https://render.com) -> New -> **Blueprint**.
-3. Connect your repository (`carecloud-voiceagent`).
-4. Fill in `MONGODB_URI` and `VAPI_API_KEY` environment variables when prompted.
-5. Click **Deploy**.
-
----
-
-## 🧪 Testing
-
-Run automated end-to-end integration tests (covering all CRUD, validation, duplicate rejection, soft-delete, and Vapi tool calls):
 ```bash
 cd backend
 npm run test:e2e
-```
+```
+
+**What the tests verify:**
+- `GET /api/v1/patients`: Verifies `{ data, total, error: null }` envelope structure.
+- `POST /api/v1/patients` (Validation): Verifies missing fields return `400 Bad Request`.
+- `POST /api/v1/patients` (Success): Registers a patient with all 17 demographic fields.
+- `POST /api/v1/patients` (Duplicate Detection): Rejects registration with duplicate phone number with `409 Conflict`.
+- `GET /api/v1/patients/:id`: Retrieves patient by UUID.
+- `GET /api/v1/patients/:id` (404): Returns `404 Not Found` for non-existent IDs.
+- `PUT /api/v1/patients/:id`: Updates fields partially.
+- `DELETE /api/v1/patients/:id` (Soft Delete): Sets `deleted_at` timestamp and excludes patient from active lists.
+- `POST /api/v1/vapi/webhook`: Verifies voice agent tool call execution (`checkExistingPatient`).
+
+---
+
+## 📞 Voice Agent Telephony Specs
+
+- **Inbound US Phone Number**: Configured via Vapi.ai with Twilio carrier integration.
+- **LLM Reasoning**: Google Gemini 1.5 Flash via Vapi orchestrator.
+- **Tool Functions Exposed via Webhook**:
+  1. `checkExistingPatient(phone_number)`: Queries Atlas database by caller ID. If found, retrieves name and existing records.
+  2. `registerPatient(...)`: Collects all 17 demographic fields and creates new patient record with conflict checks.
+  3. `scheduleAppointment(...)`: Schedules appointments linked to the patient record.

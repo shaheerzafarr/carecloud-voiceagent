@@ -46,6 +46,51 @@ export class DashboardController {
   }
 
   /**
+   * GET /dashboard/stats
+   * JSON endpoint for standalone frontend dashboard stats.
+   */
+  @Get('stats')
+  async getStats() {
+    const [stats, recentCalls, todayCalls] = await Promise.all([
+      this.patientService.getStats(),
+      this.callLogService.getRecentCalls(10),
+      this.callLogService.countToday(),
+    ]);
+
+    return {
+      data: {
+        totalPatients: stats.totalPatients,
+        todayRegistrations: stats.todayRegistrations,
+        todayCalls,
+        recentCalls,
+      },
+      error: null,
+    };
+  }
+
+  /**
+   * GET /dashboard/patient-data/:id
+   * JSON endpoint for patient detail drawer including appointments and call logs.
+   */
+  @Get('patient-data/:id')
+  async getPatientData(@Param('id') id: string) {
+    const [patient, callLogs, appointments] = await Promise.all([
+      this.patientService.getPatient(id),
+      this.callLogService.findByPatientId(id),
+      this.appointmentService.findByPatientId(id),
+    ]);
+
+    return {
+      data: {
+        patient,
+        callLogs,
+        appointments,
+      },
+      error: null,
+    };
+  }
+
+  /**
    * GET /dashboard/patients/:id
    * Patient detail page with call history and appointments.
    */

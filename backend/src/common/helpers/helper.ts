@@ -1,16 +1,10 @@
-import { UnauthorizedException } from '@nestjs/common';
-import { IUser } from 'src/resources/users/user/entities/user.entity';
-import { USER_STATUS } from 'src/resources/users/user/enums/user.enum';
 import * as fs from 'node:fs/promises'; // Node 18+ supports fs/promises
 import { SEARCH_CAPABILITIES } from '../constants/enums/enums';
 import { randomBytes } from 'node:crypto';
+
 // THIS FUNCTION IS USED TO RETURN ARRAY
 export const returnArray = (message: string | string[]) =>
   Array.isArray(message) ? message : [message];
-
-// THIS FUNCTION IS USED TO MATCH ROLES
-export const matchRoles = (roles: string[], userRole: string) =>
-  roles.includes(userRole);
 
 // THIS FUNCTION IS USED TO CREATE SLUG
 export const createSlug = (name: string, count: number): string => {
@@ -41,6 +35,7 @@ export function generateRandomPassword(length: number = 8): string {
 
   return password;
 }
+
 // THIS FUNCTION IS USED TO GENERATE RANDOM KEY
 export const randomKey = (): number =>
   Math.floor(10000 + Math.random() * 90000) + 123456;
@@ -50,20 +45,6 @@ export const generateOtpCode = (length: number = 6): number => {
   const min = Math.pow(10, length - 1);
   const max = Math.pow(10, length) - 1;
   return Math.floor(min + Math.random() * (max - min + 1));
-};
-
-export const changedPasswordAfter = function (passwordChangedAt, JWTTimestamp) {
-  if (passwordChangedAt) {
-    const changedTimestamp = Number.parseInt(
-      new Date(passwordChangedAt).getTime() / 1000 + '',
-      10,
-    );
-
-    return JWTTimestamp < changedTimestamp;
-  }
-
-  // False means NOT changed
-  return false;
 };
 
 export const convertUSDtoCents = (amount: number): number => {
@@ -79,33 +60,6 @@ export function legacyPhpFloorPrice(
   multiplier: number,
 ): number {
   return Math.floor(finalPrice * multiplier + 1e-9);
-}
-
-export const userValidationHandling = (
-  user: IUser,
-  JWTTimestamp: number,
-): [Error | null, IUser | null] => {
-  // 2) Check if user changed password after the token was issued
-
-  if ([USER_STATUS.INACTIVE].includes(user.status)) {
-    return [
-      new UnauthorizedException(
-        'Your account has been deactivated. Please contact support for more information.',
-      ),
-      null,
-    ];
-  }
-
-  if (changedPasswordAfter(user.passwordChangedAt, JWTTimestamp)) {
-    return [
-      new UnauthorizedException(
-        'Your password has been changed. Please login again.',
-      ),
-      null,
-    ];
-  }
-
-  return [null, user];
 };
 
 export const createCookieConfiguration = ({
