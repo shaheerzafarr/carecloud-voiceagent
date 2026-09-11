@@ -40,11 +40,7 @@ export function setupSwagger(
     const swaggerUser = configService.get('SWAGGER_USERNAME');
     const swaggerPassword = configService.get('SWAGGER_PASSWORD');
 
-    if (!swaggerUser || !swaggerPassword) {
-      console.log(
-        'SWAGGER_USERNAME and SWAGGER_PASSWORD must be set in production.',
-      );
-    } else {
+    if (swaggerUser && swaggerPassword) {
       app.use(
         ['/docs', '/docs-json'],
         basicAuth({
@@ -52,24 +48,15 @@ export function setupSwagger(
           users: { [swaggerUser]: swaggerPassword },
         }),
       );
-
-      // Setup Swagger UI and JSON documentation
-      SwaggerModule.setup('/docs', app, document, {
-        swaggerOptions: {
-          persistAuthorization: true, // Keeps the token persistent
-        },
-        customSiteTitle: `${appName} API Docs`, // Custom Swagger title
-        customfavIcon: `${configService.get('API_HOSTED_URL')}favicon.ico`,
-      });
     }
-  } else {
-    // Setup Swagger UI and JSON documentation
-    SwaggerModule.setup('/docs', app, document, {
-      swaggerOptions: {
-        persistAuthorization: true, // Keeps the token persistent
-      },
-      customSiteTitle: `${appName} API Docs`, // Custom Swagger title
-      customfavIcon: `${configService.get('API_HOSTED_URL')}favicon.ico`,
-    });
   }
+
+  // Setup Swagger UI and JSON documentation
+  SwaggerModule.setup('/docs', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
+    customSiteTitle: `${appName || 'CareCloud Voice Agent'} API Docs`,
+    customfavIcon: `${configService.get('API_HOSTED_URL') || '/'}favicon.ico`,
+  });
 }
