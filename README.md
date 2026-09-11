@@ -4,6 +4,18 @@ A production-ready **Voice AI Telephony & Patient Intake System** designed for t
 
 ---
 
+## 🚀 Live Demo & Submission Details
+
+* **GitHub Repository**: [https://github.com/shaheerzafarr/carecloud-voiceagent](https://github.com/shaheerzafarr/carecloud-voiceagent)
+* **Inbound Phone Number**: **`+1 (571) 364-0246`** *(Dialable U.S. line, powered by Deepgram Nova-3 + GPT-4o-mini)*
+* **Live Clinical Web Portal**: [https://carecloud-voiceagent-yzij.onrender.com/](https://carecloud-voiceagent-yzij.onrender.com/)
+* **Server-Rendered Dashboard**: [https://carecloud-voiceagent-yzij.onrender.com/dashboard](https://carecloud-voiceagent-yzij.onrender.com/dashboard)
+* **REST API Base URL**: `https://carecloud-voiceagent-yzij.onrender.com/api/v1`
+* **Interactive Swagger Docs**: [https://carecloud-voiceagent-yzij.onrender.com/docs](https://carecloud-voiceagent-yzij.onrender.com/docs)
+* **Testing Notes**: No login credentials required. Dialing the phone number immediately initiates registration. Calling back from the same number triggers duplicate detection and returning caller flow.
+
+---
+
 ## 🏗️ Repository Architecture
 
 The project is cleanly decoupled into two focused directories:
