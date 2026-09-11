@@ -16,10 +16,31 @@ export class AppointmentService {
     appointment_type?: string;
     notes?: string;
   }): Promise<IAppointment> {
-    // Default to next available weekday if no date provided
-    const appointmentDate = data.preferred_date
-      ? new Date(data.preferred_date)
-      : this.getNextAvailableDate();
+    // Ensure appointment date is strictly in the future (no past appointments)
+    let appointmentDate: Date;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (data.preferred_date) {
+      const parsed = new Date(data.preferred_date);
+      if (!isNaN(parsed.getTime())) {
+        // If LLM defaulted to an older cutoff year (e.g. 2023 or 2024), bump to current year
+        if (parsed.getFullYear() < today.getFullYear()) {
+          parsed.setFullYear(today.getFullYear());
+        }
+
+        // If the parsed date is still in the past, default to next available weekday
+        if (parsed < today) {
+          appointmentDate = this.getNextAvailableDate();
+        } else {
+          appointmentDate = parsed;
+        }
+      } else {
+        appointmentDate = this.getNextAvailableDate();
+      }
+    } else {
+      appointmentDate = this.getNextAvailableDate();
+    }
 
     const appointment = await this.appointmentRepository.create({
       patient_id: data.patient_id,

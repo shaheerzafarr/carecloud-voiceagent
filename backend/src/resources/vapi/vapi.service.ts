@@ -5,7 +5,27 @@ import { AppointmentService } from '../appointments/appointment.service';
 import { CALL_STATUS } from '../call-logs/entities/call-log.entity';
 import axios from 'axios';
 import { ConfigService } from 'src/config/config.service';
-import { SYSTEM_PROMPT, VAPI_TOOLS, VAPI_ASSISTANT_CONFIG } from './prompts/system-prompt';
+import {
+  SYSTEM_PROMPT,
+  VAPI_TOOLS,
+  VAPI_ASSISTANT_CONFIG,
+  getAssistantConfig,
+} from './prompts/system-prompt';
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
+import { CreatePatientDto } from '../patients/dto/create-patient.dto';
+
+/**
+ * Helper to sanitize phone numbers to 10 digits
+ */
+function sanitizePhoneNumber(phone: string | undefined): string {
+  if (!phone) return '';
+  const digits = phone.replace(/\D/g, '');
+  if (digits.length === 11 && digits.startsWith('1')) {
+    return digits.slice(1);
+  }
+  return digits;
+}
 
 /**
  * VapiService
@@ -132,17 +152,38 @@ export class VapiService {
    * Checks if a patient with the given phone number already exists.
    */
   private async handleCheckExistingPatient(args: any): Promise<any> {
-    const patient = await this.patientService.findByPhone(args.phone_number);
+    const cleanPhone = sanitizePhoneNumber(args.phone_number) || args.phone_number;
+    const patient = await this.patientService.findByPhone(cleanPhone);
 
     if (patient) {
       this.logger.log(
         `🔍 Existing patient found: ${patient.patient_id} | ${patient.first_name} ${patient.last_name}`,
       );
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const appointments = await this.appointmentService.findByPatientId(patient.patient_id);
+      const upcoming = appointments.filter((a) => new Date(a.date) >= today);
+
+      const upcomingSummary =
+        upcoming.length > 0
+          ? `${new Date(upcoming[0].date).toLocaleDateString('en-US', {
+              weekday: 'long',
+              month: 'long',
+              day: 'numeric',
+              year: 'numeric',
+            })} at ${upcoming[0].time}`
+          : 'No upcoming appointments';
+
       return {
         exists: true,
         patient_id: patient.patient_id,
         first_name: patient.first_name,
         last_name: patient.last_name,
+        has_upcoming_appointment: upcoming.length > 0,
+        appointment_summary: upcomingSummary,
+        upcoming_appointment: upcoming.length > 0 ? upcomingSummary : null,
         message: `Found existing patient: ${patient.first_name} ${patient.last_name}`,
       };
     }
@@ -156,8 +197,40 @@ export class VapiService {
   /**
    * Create a new patient record.
    * Called after the caller confirms their information.
+   * Enforces server-side validation per PDF specifications.
    */
   private async handleCreatePatient(args: any, message: any): Promise<any> {
+    // 1. Sanitize phone numbers
+    if (args.phone_number) {
+      args.phone_number = sanitizePhoneNumber(args.phone_number);
+    }
+    if (args.emergency_contact_phone) {
+      args.emergency_contact_phone = sanitizePhoneNumber(args.emergency_contact_phone);
+    }
+
+    // 2. Homophone normalization for sex
+    if (typeof args.sex === 'string') {
+      const s = args.sex.trim().toLowerCase();
+      if (s === 'mail' || s === 'male' || s === 'm') args.sex = 'Male';
+      else if (s === 'female' || s === 'f' || s === 'woman') args.sex = 'Female';
+      else if (s === 'other') args.sex = 'Other';
+      else if (s.includes('decline')) args.sex = 'Decline to Answer';
+    }
+
+    // 3. Server-side validation against CreatePatientDto per PDF requirement
+    const dto = plainToInstance(CreatePatientDto, args);
+    const errors = await validate(dto);
+    if (errors.length > 0) {
+      const errorMessages = errors
+        .map((err) => Object.values(err.constraints || {}).join(', '))
+        .join('; ');
+      this.logger.warn(`⚠️ Validation failed on createPatient: ${errorMessages}`);
+      return {
+        success: false,
+        error: `Validation error: ${errorMessages}. Please ask the caller to clarify or re-enter the invalid field.`,
+      };
+    }
+
     const patient = await this.patientService.createPatient(args);
 
     // Link call log to patient if we have a call ID
@@ -185,6 +258,16 @@ export class VapiService {
    */
   private async handleUpdatePatient(args: any): Promise<any> {
     const { patient_id, ...updateData } = args;
+
+    if (updateData.phone_number) {
+      updateData.phone_number = sanitizePhoneNumber(updateData.phone_number);
+    }
+    if (updateData.emergency_contact_phone) {
+      updateData.emergency_contact_phone = sanitizePhoneNumber(
+        updateData.emergency_contact_phone,
+      );
+    }
+
     const patient = await this.patientService.updatePatient(patient_id, updateData);
 
     return {
@@ -299,8 +382,10 @@ export class VapiService {
     }
 
     const assistantConfig = {
-      ...VAPI_ASSISTANT_CONFIG,
-      serverUrl: webhookUrl,
+      ...getAssistantConfig(),
+      server: {
+        url: webhookUrl,
+      },
     };
 
     try {

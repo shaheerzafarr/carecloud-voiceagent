@@ -2,8 +2,8 @@
  * Vapi Assistant Provisioning Script
  *
  * Automatically creates or updates the Voice AI Assistant on Vapi
- * configured with Google Gemini 1.5 Flash (free LLM), US English voice,
- * and the 3 patient registration function tools.
+ * configured with OpenAI GPT-4o-mini, US English voice,
+ * and the patient registration function tools.
  *
  * Usage:
  *   npx ts-node scripts/setup-vapi.ts <SERVER_URL>
@@ -12,7 +12,7 @@
  */
 
 import axios from 'axios';
-import { VAPI_ASSISTANT_CONFIG, VAPI_TOOLS } from '../src/resources/vapi/prompts/system-prompt';
+import { getAssistantConfig } from '../src/resources/vapi/prompts/system-prompt';
 
 async function main() {
   const vapiApiKey = process.env.VAPI_API_KEY;
@@ -30,8 +30,9 @@ async function main() {
   console.log('🚀 Provisioning CareCloud Voice AI Agent on Vapi...');
   console.log(`📡 Server Webhook URL: ${webhookUrl}`);
 
+  const assistantConfig = getAssistantConfig();
   const assistantPayload = {
-    ...VAPI_ASSISTANT_CONFIG,
+    ...assistantConfig,
     server: {
       url: webhookUrl,
     },
@@ -69,7 +70,7 @@ async function main() {
 
     console.log(`🆔 Assistant ID: ${assistantData.id}`);
 
-    // Try to list phone numbers to help the candidate
+    // Try to list phone numbers
     try {
       const phoneRes = await axios.get('https://api.vapi.ai/phone-number', {
         headers: { Authorization: `Bearer ${vapiApiKey}` },
@@ -80,9 +81,6 @@ async function main() {
         for (const num of numbers) {
           console.log(`   • ${num.number || num.id} (Current Assistant: ${num.assistantId || 'None'})`);
         }
-      } else {
-        console.log('\n⚠️ No phone numbers found in your Vapi account yet.');
-        console.log('👉 Go to Vapi Dashboard -> Phone Numbers -> Buy Phone Number (Free)');
       }
     } catch {
       // ignore phone listing error
