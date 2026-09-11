@@ -1,0 +1,19 @@
+# Render Blueprint Configuration for CareCloud Voice Agent
+services:
+  - type: web
+    name: carecloud-voiceagent
+    env: node
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm run start:prod
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: API_PREFIX
+        value: api/v1
+      - key: MONGODB_URI
+        sync: false
+      - key: VAPI_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false

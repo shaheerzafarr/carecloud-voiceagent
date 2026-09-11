@@ -23,14 +23,14 @@ async function bootstrap() {
   const PORT = configService.get('PORT') || 8000;
 
   app.enableCors({
-    origin: allowedPorts,
+    origin: true,
     credentials: true,
   });
 
-  // Middleware to redirect base URL to /docs
+  // Middleware to redirect base URL to /dashboard
   app.use((req: Request, res: Response, next: any) => {
     if (req.path === '/') {
-      return res.redirect('docs');
+      return res.redirect('/dashboard');
     }
     next();
   });

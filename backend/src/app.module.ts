@@ -12,6 +12,11 @@ import { UsersModule } from './resources/users/users.module';
 import { SharedModule } from './shared/shared.module';
 import { CrudModule } from './resources/crud/crud.module';
 import { AdminModule } from './resources/admin/admin.module';
+import { PatientModule } from './resources/patients/patient.module';
+import { VapiModule } from './resources/vapi/vapi.module';
+import { CallLogModule } from './resources/call-logs/call-log.module';
+import { AppointmentModule } from './resources/appointments/appointment.module';
+import { DashboardModule } from './resources/dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -31,6 +36,11 @@ import { AdminModule } from './resources/admin/admin.module';
     MediaModule,
     CrudModule,
     AdminModule,
+    PatientModule,
+    VapiModule,
+    CallLogModule,
+    AppointmentModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [
