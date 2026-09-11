@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CareCloud AI Voice Agent Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <script type="module" crossorigin src="/assets/index-3DaZjftS.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-D5zHEcsc.css">
+</head>
+<body>
+  <div id="app" class="app-layout">
+    <!-- TOP NAVIGATION BAR -->
+    <header class="top-nav">
+      <div class="nav-left">
+        <div class="brand-badge">
+          <div class="brand-logo-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+              <path d="M12 5v14"/>
+              <path d="M5 12h14"/>
+            </svg>
+          </div>
+          <div>
+            <h1 class="brand-title">CareCloud <span class="brand-accent">VoiceAI</span></h1>
+            <p class="brand-subtitle">Clinical Intake & Telephony Portal</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-center">
+        <div class="telephony-pill">
+          <span class="status-dot pulse"></span>
+          <div class="telephony-info">
+            <span class="telephony-label">INBOUND VOICE LINE</span>
+            <strong class="telephony-number" id="nav-phone-display">+1 (571) 364-0246</strong>
+          </div>
+          <button class="icon-btn copy-btn" id="btn-copy-phone" title="Copy Phone Number">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+              <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="nav-right">
+        <div class="system-status-chip">
+          <span class="badge badge-success">Vapi + Gemini Live</span>
+          <span class="badge badge-outline">Atlas DB Synced</span>
+        </div>
+        <button class="btn btn-primary" id="btn-open-register-modal">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+          New Patient
+        </button>
+        <button class="btn btn-secondary icon-only" id="btn-refresh-all" title="Refresh Data">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN BODY -->
+    <main class="main-content">
+      <!-- HERO TELEPHONY BANNER -->
+      <section class="telephony-hero">
+        <div class="hero-left">
+          <div class="agent-tag">
+            <span class="pulse-ring"></span>
+            AI AGENT READY FOR INBOUND CALLS
+          </div>
+          <h2>Automated Patient Registration & Scheduling</h2>
+          <p>
+            Call the dedicated CareCloud line to test conversational intake. The AI agent asks for all 17 demographic
+            fields, checks existing records in MongoDB Atlas, and synchronizes clinical appointments in real time.
+          </p>
+          <div class="hero-meta-row">
+            <div class="meta-item">
+              <span class="meta-key">LLM Core:</span>
+              <span class="meta-val">OpenAI GPT-4o Mini</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-key">Voice Engine:</span>
+              <span class="meta-val">Vapi.ai + Deepgram STT</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-key">Webhook:</span>
+              <span class="meta-val code-text">/api/v1/vapi/webhook</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-right">
+          <div class="dialer-card">
+            <div class="dialer-header">
+              <span>Voice Agent Inbound</span>
+              <span class="badge badge-success">Online</span>
+            </div>
+            <div class="dialer-body">
+              <div class="dialer-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                </svg>
+              </div>
+              <div class="dialer-digits" id="hero-phone-number">+1 (571) 364-0246</div>
+              <p class="dialer-caption">Dial from any US phone to simulate full patient registration</p>
+              <div class="dialer-actions">
+                <button class="btn btn-outline btn-sm" id="btn-test-webhook-info">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                  How To Test
+                </button>
+                <button class="btn btn-primary btn-sm" id="btn-copy-dialer-number">
+                  Copy Number
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- KPI METRIC CARDS -->
+      <section class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-icon-wrap icon-patients">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div class="kpi-content">
+            <div class="kpi-label">TOTAL REGISTERED PATIENTS</div>
+            <div class="kpi-value" id="kpi-total-patients">--</div>
+            <div class="kpi-trend positive" id="kpi-today-reg">-- new today</div>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon-wrap icon-calls">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+          <div class="kpi-content">
+            <div class="kpi-label">VOICE INTAKE CALLS TODAY</div>
+            <div class="kpi-value" id="kpi-today-calls">--</div>
+            <div class="kpi-trend">AI Agent handled</div>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon-wrap icon-appointments">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/><path d="m9 16 2 2 4-4"/></svg>
+          </div>
+          <div class="kpi-content">
+            <div class="kpi-label">APPOINTMENTS SCHEDULED</div>
+            <div class="kpi-value" id="kpi-total-appointments">--</div>
+            <div class="kpi-trend positive">Synchronized</div>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon-wrap icon-status">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4"/><path d="m4.93 4.93 2.83 2.83"/><path d="M2 12h4"/><path d="m4.93 19.07 2.83-2.83"/><path d="M12 18v4"/><path d="m19.07 19.07-2.83-2.83"/><path d="M18 12h4"/><path d="m19.07 4.93-2.83 2.83"/></svg>
+          </div>
+          <div class="kpi-content">
+            <div class="kpi-label">SYSTEM HEALTH & LATENCY</div>
+            <div class="kpi-value">99.9%</div>
+            <div class="kpi-trend positive">REST API: 200 OK</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- NAVIGATION TABS -->
+      <nav class="view-tabs" role="tablist">
+        <button class="tab-btn active" data-tab="tab-patients" role="tab">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          Patients Directory
+          <span class="tab-count" id="patient-count-badge">0</span>
+        </button>
+        <button class="tab-btn" data-tab="tab-calls" role="tab">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Voice Call Logs & Transcripts
+        </button>
+        <button class="tab-btn" data-tab="tab-architecture" role="tab">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" x2="12" y1="22" y2="12"/></svg>
+          Agent Architecture & Specs
+        </button>
+      </nav>
+
+      <!-- TAB 1: PATIENTS DIRECTORY -->
+      <section id="tab-patients" class="tab-panel active">
+        <!-- CONTROLS & FILTER BAR -->
+        <div class="table-controls">
+          <div class="search-input-wrap">
+            <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" id="patient-search-input" placeholder="Search by name, phone (e.g. 555-706-7122), or email..." />
+            <button class="clear-search-btn" id="btn-clear-search" style="display:none;">&times;</button>
+          </div>
+
+          <div class="filter-group">
+            <select id="filter-gender" class="filter-select">
+              <option value="">All Genders</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+
+            <select id="filter-insurance" class="filter-select">
+              <option value="">All Insurances</option>
+              <option value="Blue Cross Blue Shield">Blue Cross Blue Shield</option>
+              <option value="Aetna">Aetna</option>
+              <option value="UnitedHealthcare">UnitedHealthcare</option>
+              <option value="Cigna">Cigna</option>
+              <option value="Medicare">Medicare</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- PATIENTS TABLE -->
+        <div class="table-container">
+          <table class="data-table" id="patients-table">
+            <thead>
+              <tr>
+                <th>Patient Name</th>
+                <th>Phone Number</th>
+                <th>DOB & Gender</th>
+                <th>Insurance Provider</th>
+                <th>Policy Number</th>
+                <th>Registered</th>
+                <th class="text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="patients-table-body">
+              <tr>
+                <td colspan="7" class="loading-state">
+                  <div class="spinner"></div>
+                  <span>Loading patient clinical records...</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-footer">
+          <div class="footer-count" id="patient-footer-count">Showing 0 patients</div>
+          <div class="footer-note">All 17 required demographic & intake fields collected via Voice Agent</div>
+        </div>
+      </section>
+
+      <!-- TAB 2: CALL LOGS & TRANSCRIPTS -->
+      <section id="tab-calls" class="tab-panel">
+        <div class="panel-header">
+          <div>
+            <h3>Inbound AI Voice Sessions</h3>
+            <p>Full transcription logs and audio recordings captured via Vapi Telephony Webhook</p>
+          </div>
+          <button class="btn btn-secondary btn-sm" id="btn-refresh-calls">Refresh Logs</button>
+        </div>
+
+        <div class="call-logs-container" id="call-logs-list">
+          <div class="loading-state">
+            <div class="spinner"></div>
+            <span>Loading recent calls...</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: AGENT ARCHITECTURE & SPECS -->
+      <section id="tab-architecture" class="tab-panel">
+        <div class="architecture-grid">
+          <div class="arch-card">
+            <h4>Voice Agent Tool Functions</h4>
+            <p>Vapi executes these tools via HTTP POST to the backend webhook:</p>
+            <div class="tool-spec-list">
+              <div class="tool-spec-item">
+                <span class="badge badge-primary">checkExistingPatient</span>
+                <p>Queries database by 10-digit caller phone number. If found, greets patient by name and retrieves their records.</p>
+              </div>
+              <div class="tool-spec-item">
+                <span class="badge badge-success">registerPatient</span>
+                <p>Captures all 17 demographic, contact, address, emergency, and insurance fields with duplicate phone detection (409 Conflict).</p>
+              </div>
+              <div class="tool-spec-item">
+                <span class="badge badge-indigo">scheduleAppointment</span>
+                <p>Books appointment slot with doctor, date, time, and visit reason linked to the patient UUID.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="arch-card">
+            <h4>17 Required Demographic Fields</h4>
+            <div class="fields-pill-cloud">
+              <span class="field-pill">1. First Name</span>
+              <span class="field-pill">2. Last Name</span>
+              <span class="field-pill">3. Date of Birth</span>
+              <span class="field-pill">4. Gender</span>
+              <span class="field-pill">5. Phone Number</span>
+              <span class="field-pill">6. Email Address</span>
+              <span class="field-pill">7. Preferred Language</span>
+              <span class="field-pill">8. Street Address</span>
+              <span class="field-pill">9. City</span>
+              <span class="field-pill">10. State</span>
+              <span class="field-pill">11. ZIP Code</span>
+              <span class="field-pill">12. Emergency Name</span>
+              <span class="field-pill">13. Emergency Phone</span>
+              <span class="field-pill">14. Emergency Relation</span>
+              <span class="field-pill">15. Insurance Provider</span>
+              <span class="field-pill">16. Policy Number</span>
+              <span class="field-pill">17. Group Number</span>
+            </div>
+          </div>
+
+          <div class="arch-card">
+            <h4>REST API Endpoints</h4>
+            <div class="endpoints-list">
+              <div class="endpoint-row"><span class="badge badge-get">GET</span><code>/api/v1/patients</code> <span class="endpoint-desc">List patients</span></div>
+              <div class="endpoint-row"><span class="badge badge-post">POST</span><code>/api/v1/patients</code> <span class="endpoint-desc">Register patient</span></div>
+              <div class="endpoint-row"><span class="badge badge-get">GET</span><code>/api/v1/patients/:id</code> <span class="endpoint-desc">Get patient details</span></div>
+              <div class="endpoint-row"><span class="badge badge-put">PUT</span><code>/api/v1/patients/:id</code> <span class="endpoint-desc">Update patient</span></div>
+              <div class="endpoint-row"><span class="badge badge-delete">DELETE</span><code>/api/v1/patients/:id</code> <span class="endpoint-desc">Soft-delete (deleted_at)</span></div>
+              <div class="endpoint-row"><span class="badge badge-post">POST</span><code>/api/v1/vapi/webhook</code> <span class="endpoint-desc">Vapi Voice Agent Webhook</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- SLIDE-OVER PATIENT CHART DRAWER -->
+    <div class="drawer-backdrop" id="patient-drawer-backdrop"></div>
+    <aside class="patient-drawer" id="patient-drawer">
+      <div class="drawer-header">
+        <div class="drawer-title-wrap">
+          <div class="patient-avatar-large" id="drawer-avatar">JS</div>
+          <div>
+            <h3 class="drawer-patient-name" id="drawer-name">Patient Name</h3>
+            <div class="drawer-patient-meta">
+              <span id="drawer-phone">+1 (555) 000-0000</span>
+              <span>&bull;</span>
+              <span id="drawer-dob">DOB: --</span>
+            </div>
+          </div>
+        </div>
+        <button class="icon-btn close-drawer-btn" id="btn-close-drawer">&times;</button>
+      </div>
+
+      <div class="drawer-content" id="drawer-content">
+        <!-- 17 DEMOGRAPHIC FIELDS SPLIT INTO LOGICAL MEDICAL SECTIONS -->
+        <div class="record-section">
+          <div class="section-title">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a6 6 0 0 1 12 0v2"/></svg>
+            Personal Information
+          </div>
+          <div class="detail-grid">
+            <div class="detail-field"><span class="field-label">First Name</span><strong class="field-value" id="df-first-name">--</strong></div>
+            <div class="detail-field"><span class="field-label">Last Name</span><strong class="field-value" id="df-last-name">--</strong></div>
+            <div class="detail-field"><span class="field-label">Date of Birth</span><strong class="field-value" id="df-dob">--</strong></div>
+            <div class="detail-field"><span class="field-label">Gender</span><strong class="field-value capitalize" id="df-gender">--</strong></div>
+            <div class="detail-field"><span class="field-label">Preferred Language</span><strong class="field-value" id="df-language">--</strong></div>
+            <div class="detail-field"><span class="field-label">Patient UUID</span><code class="field-value code-text" id="df-uuid">--</code></div>
+          </div>
+        </div>
+
+        <div class="record-section">
+          <div class="section-title">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            Contact & Address
+          </div>
+          <div class="detail-grid">
+            <div class="detail-field"><span class="field-label">Primary Phone</span><strong class="field-value" id="df-phone">--</strong></div>
+            <div class="detail-field"><span class="field-label">Email</span><strong class="field-value" id="df-email">--</strong></div>
+            <div class="detail-field full-width"><span class="field-label">Street Address</span><strong class="field-value" id="df-address">--</strong></div>
+            <div class="detail-field"><span class="field-label">City</span><strong class="field-value" id="df-city">--</strong></div>
+            <div class="detail-field"><span class="field-label">State</span><strong class="field-value" id="df-state">--</strong></div>
+            <div class="detail-field"><span class="field-label">ZIP Code</span><strong class="field-value" id="df-zip">--</strong></div>
+          </div>
+        </div>
+
+        <div class="record-section">
+          <div class="section-title">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Emergency Contact
+          </div>
+          <div class="detail-grid">
+            <div class="detail-field"><span class="field-label">Contact Name</span><strong class="field-value" id="df-emer-name">--</strong></div>
+            <div class="detail-field"><span class="field-label">Relationship</span><strong class="field-value" id="df-emer-rel">--</strong></div>
+            <div class="detail-field"><span class="field-label">Contact Phone</span><strong class="field-value" id="df-emer-phone">--</strong></div>
+          </div>
+        </div>
+
+        <div class="record-section">
+          <div class="section-title">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+            Insurance & Coverage
+          </div>
+          <div class="detail-grid">
+            <div class="detail-field"><span class="field-label">Insurance Provider</span><strong class="field-value" id="df-ins-provider">--</strong></div>
+            <div class="detail-field"><span class="field-label">Policy Number</span><strong class="field-value" id="df-ins-policy">--</strong></div>
+            <div class="detail-field"><span class="field-label">Group Number</span><strong class="field-value" id="df-ins-group">--</strong></div>
+          </div>
+        </div>
+
+        <!-- PATIENT APPOINTMENTS SECTION -->
+        <div class="record-section">
+          <div class="section-title-between">
+            <div class="section-title">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+              Scheduled Appointments
+            </div>
+            <button class="btn btn-secondary btn-xs" id="btn-open-book-appointment">+ Book</button>
+          </div>
+          <div class="appointment-list" id="drawer-appointments-list">
+            <div class="empty-list-note">No appointments booked yet.</div>
+          </div>
+        </div>
+
+        <!-- CALL TRANSCRIPTS FOR THIS PATIENT -->
+        <div class="record-section">
+          <div class="section-title">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Voice Agent Call History & Transcripts
+          </div>
+          <div class="drawer-calls-list" id="drawer-calls-list">
+            <div class="empty-list-note">No call history recorded.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="drawer-footer">
+        <button class="btn btn-danger btn-sm" id="btn-delete-patient">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+          Soft Delete Record
+        </button>
+        <button class="btn btn-secondary btn-sm" id="btn-close-drawer-bottom">Close</button>
+      </div>
+    </aside>
+
+    <!-- MODAL: REGISTER NEW PATIENT -->
+    <div class="modal-backdrop" id="register-modal-backdrop">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h3>Register New Patient</h3>
+          <button class="icon-btn" id="btn-close-register-modal">&times;</button>
+        </div>
+        <form id="register-patient-form">
+          <div class="modal-body scrollable-body">
+            <p class="form-instructions">
+              Enter patient intake demographics. This submits to <code class="code-text">POST /api/v1/patients</code> and validates all 17 required clinical fields.
+            </p>
+
+            <h5 class="form-subheading">Personal Demographics</h5>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>First Name *</label>
+                <input type="text" name="first_name" required placeholder="John" />
+              </div>
+              <div class="form-group">
+                <label>Last Name *</label>
+                <input type="text" name="last_name" required placeholder="Doe" />
+              </div>
+              <div class="form-group">
+                <label>Date of Birth * (YYYY-MM-DD)</label>
+                <input type="date" name="date_of_birth" required />
+              </div>
+              <div class="form-group">
+                <label>Gender *</label>
+                <select name="gender" required>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Phone Number * (10 Digits)</label>
+                <input type="tel" name="phone_number" required placeholder="5551234567" />
+              </div>
+              <div class="form-group">
+                <label>Email Address *</label>
+                <input type="email" name="email" required placeholder="john.doe@example.com" />
+              </div>
+              <div class="form-group">
+                <label>Preferred Language</label>
+                <input type="text" name="preferred_language" value="English" />
+              </div>
+            </div>
+
+            <h5 class="form-subheading">Residential Address</h5>
+            <div class="form-grid">
+              <div class="form-group full-col">
+                <label>Street Address *</label>
+                <input type="text" name="street_address" required placeholder="123 Medical Center Way" />
+              </div>
+              <div class="form-group">
+                <label>City *</label>
+                <input type="text" name="city" required placeholder="Austin" />
+              </div>
+              <div class="form-group">
+                <label>State * (e.g. TX)</label>
+                <input type="text" name="state" required placeholder="TX" maxlength="2" />
+              </div>
+              <div class="form-group">
+                <label>ZIP Code *</label>
+                <input type="text" name="zip_code" required placeholder="78701" />
+              </div>
+            </div>
+
+            <h5 class="form-subheading">Emergency Contact</h5>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Emergency Contact Name *</label>
+                <input type="text" name="emergency_contact_name" required placeholder="Jane Doe" />
+              </div>
+              <div class="form-group">
+                <label>Relationship *</label>
+                <input type="text" name="emergency_contact_relationship" required placeholder="Spouse" />
+              </div>
+              <div class="form-group">
+                <label>Emergency Phone *</label>
+                <input type="tel" name="emergency_contact_phone" required placeholder="5559876543" />
+              </div>
+            </div>
+
+            <h5 class="form-subheading">Insurance Details</h5>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Insurance Provider *</label>
+                <input type="text" name="insurance_provider" required placeholder="Blue Cross Blue Shield" />
+              </div>
+              <div class="form-group">
+                <label>Policy Number *</label>
+                <input type="text" name="policy_number" required placeholder="POL-99281" />
+              </div>
+              <div class="form-group">
+                <label>Group Number *</label>
+                <input type="text" name="group_number" required placeholder="GRP-1049" />
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="btn-cancel-register">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="btn-submit-register">Create Record</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL: SCHEDULE APPOINTMENT -->
+    <div class="modal-backdrop" id="appointment-modal-backdrop">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h3>Schedule Appointment</h3>
+          <button class="icon-btn" id="btn-close-appointment-modal">&times;</button>
+        </div>
+        <form id="schedule-appointment-form">
+          <input type="hidden" name="patient_id" id="appt-patient-id" />
+          <div class="modal-body">
+            <div class="form-group">
+              <label>Patient</label>
+              <input type="text" id="appt-patient-name-display" readonly class="readonly-input" />
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Appointment Date *</label>
+                <input type="date" name="appointment_date" required id="appt-date-input" />
+              </div>
+              <div class="form-group">
+                <label>Appointment Time *</label>
+                <input type="time" name="appointment_time" required value="10:00" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Physician / Provider *</label>
+              <input type="text" name="doctor_name" required placeholder="Dr. Sarah Johnson" value="Dr. Sarah Johnson" />
+            </div>
+            <div class="form-group">
+              <label>Reason for Visit *</label>
+              <textarea name="reason" required rows="3" placeholder="Annual physical checkup, follow-up, etc."></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="btn-cancel-appointment">Cancel</button>
+            <button type="submit" class="btn btn-primary">Book Appointment</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL: HOW TO TEST VOICE AGENT -->
+    <div class="modal-backdrop" id="test-info-modal-backdrop">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h3>Testing the Voice AI Agent</h3>
+          <button class="icon-btn" id="btn-close-test-info">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="test-step">
+            <span class="step-num">1</span>
+            <div>
+              <strong>Live Telephony Call (Preferred)</strong>
+              <p>Call the inbound US phone number: <strong class="code-text" id="modal-phone-text">+1 (571) 364-0246</strong>.</p>
+              <p class="step-hint">The Gemini Flash Voice Agent answers immediately, checks your phone number against the database, and guides you through clinical intake or scheduling.</p>
+            </div>
+          </div>
+          <div class="test-step">
+            <span class="step-num">2</span>
+            <div>
+              <strong>Automated End-to-End Test Suite</strong>
+              <p>In terminal run: <code class="code-text">npm run test:e2e</code> inside the <code class="code-text">backend/</code> directory.</p>
+              <p class="step-hint">Validates patient CRUD, 409 conflict duplicate phone checks, Vapi webhook tool calls, and soft-delete handling.</p>
+            </div>
+          </div>
+          <div class="test-step">
+            <span class="step-num">3</span>
+            <div>
+              <strong>Interactive Webhook Simulation</strong>
+              <p>Test the tool-call dispatcher directly via curl or Postman:</p>
+              <pre class="code-block">curl -X POST http://localhost:5006/api/v1/vapi/webhook \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": {
+      "type": "tool-calls",
+      "toolCalls": [{
+        "id": "call_123",
+        "function": {
+          "name": "checkExistingPatient",
+          "arguments": { "phone_number": "5557067122" }
+        }
+      }]
+    }
+  }'</pre>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="btn-dismiss-test-info">Got it</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOAST NOTIFICATIONS -->
+    <div class="toast-container" id="toast-container"></div>
+  </div>
+
+</body>
+</html>

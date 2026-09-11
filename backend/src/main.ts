@@ -27,10 +27,16 @@ async function bootstrap() {
     credentials: true,
   });
 
-  // Middleware to redirect base URL to /dashboard and support both prefixed and unprefixed routes
+  const fs = require('fs');
+  const publicIndexPath = join(__dirname, '..', 'public', 'index.html');
+
+  // Middleware to serve modern frontend or redirect to /dashboard, and support both prefixed/unprefixed routes
   app.use((req: Request, res: Response, next: any) => {
     if (req.path === '/' || req.path === '') {
-      return res.redirect('/dashboard');
+      if (!fs.existsSync(publicIndexPath)) {
+        return res.redirect('/dashboard');
+      }
+      return next();
     }
     // Transparently rewrite unprefixed /patients, /vapi, and /appointments calls to /api/v1
     if (req.url.startsWith('/patients')) {
