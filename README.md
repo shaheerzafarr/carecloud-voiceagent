@@ -112,18 +112,28 @@ Access points:
 
 ## 📡 REST API Documentation
 
-### **Patients Endpoints** (`/api/v1/patients`)
+The REST API supports both direct root paths (e.g., `/patients`) and prefixed paths (`/api/v1/patients`) for maximum flexibility:
 
-- **`GET /api/v1/patients`**: List all patients.
-  - Query parameters: `?last_name=Smith&date_of_birth=1985-06-15&phone_number=%2B15551234567`
-- **`GET /api/v1/patients/:id`**: Get single patient by ID or UUID.
-- **`POST /api/v1/patients`**: Create a new patient record manually.
-- **`PUT /api/v1/patients/:id`**: Update existing patient fields.
-- **`DELETE /api/v1/patients/:id`**: Soft-delete a patient.
+### **Patients Endpoints** (`/patients` & `/api/v1/patients`)
 
-### **Vapi Webhook Endpoint** (`/api/v1/vapi/webhook`)
+- **`GET /patients`** (or `/api/v1/patients`): List all registered patients.
+  - Query parameters: `?last_name=Smith&date_of_birth=1985-06-15&phone_number=5551234567`
+  - Response envelope: `{ "data": [...], "total": 3, "error": null }`
+- **`GET /patients/:id`**: Retrieve a single patient by UUID (`patient_id`).
+- **`POST /patients`**: Create a new patient record with full server-side validation.
+  - Validates names, 10-digit US phone, non-future date of birth, sex enum, 2-letter state, and ZIP format.
+  - Returns `409 Conflict` if phone number already exists (Duplicate Detection).
+- **`PUT /patients/:id`**: Partial update to an existing patient record.
+- **`DELETE /patients/:id`**: Soft-delete a patient record (`deleted_at` timestamp set; record excluded from active queries).
 
-- **`POST /api/v1/vapi/webhook`**: Endpoint called by Vapi for tool calls (`register_patient`, `check_existing_patient`, `schedule_appointment`) and end-of-call transcript logging.
+### **Vapi Voice Webhook Endpoint** (`/vapi/webhook` & `/api/v1/vapi/webhook`)
+
+- **`POST /vapi/webhook`**: Receives Vapi tool execution requests and call completion reports:
+  - `checkExistingPatient`: Duplicate detection by phone number before registration.
+  - `createPatient`: Saves the confirmed patient record after caller confirms details.
+  - `updatePatient`: Updates information for returning callers.
+  - `scheduleAppointment`: Books a first appointment for newly registered callers.
+  - `end-of-call-report`: Saves complete call transcript, call duration, and summary.
 
 ---
 
@@ -133,14 +143,15 @@ Access points:
 1. Push this repository to GitHub.
 2. Log into [Render.com](https://render.com) -> New -> **Blueprint**.
 3. Connect your repository (`carecloud-voiceagent`).
-4. Fill in `MONGODB_URI` environment variable when prompted.
+4. Fill in `MONGODB_URI` and `VAPI_API_KEY` environment variables when prompted.
 5. Click **Deploy**.
 
 ---
 
 ## 🧪 Testing
 
-Run automated end-to-end integration tests:
+Run automated end-to-end integration tests (covering all CRUD, validation, duplicate rejection, soft-delete, and Vapi tool calls):
 ```bash
+cd backend
 npm run test:e2e
-```
+```

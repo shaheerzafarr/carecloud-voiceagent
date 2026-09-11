@@ -1,163 +1,165 @@
-<%- include('layout', { body: `
-  <!-- Header -->
-  <header class="page-header">
-    <div>
-      <h1 class="page-title">Patient Dashboard</h1>
-      <p class="page-subtitle">Manage patient registrations from voice calls</p>
-    </div>
-    <div class="header-actions">
-      <div class="live-badge">
-        <span class="pulse-dot"></span>
-        Voice Agent Active
-      </div>
-    </div>
-  </header>
+<%- include('partials/header') %>
 
-  <!-- Stats Cards -->
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-icon stat-icon-blue">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-          <circle cx="9" cy="7" r="4"/>
-          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-        </svg>
-      </div>
-      <div class="stat-info">
-        <span class="stat-value"><%= totalPatients %></span>
-        <span class="stat-label">Total Patients</span>
-      </div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-icon stat-icon-green">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-          <circle cx="8.5" cy="7" r="4"/>
-          <line x1="20" y1="8" x2="20" y2="14"/>
-          <line x1="23" y1="11" x2="17" y2="11"/>
-        </svg>
-      </div>
-      <div class="stat-info">
-        <span class="stat-value"><%= todayRegistrations %></span>
-        <span class="stat-label">Today's Registrations</span>
-      </div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-icon stat-icon-purple">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72"/>
-        </svg>
-      </div>
-      <div class="stat-info">
-        <span class="stat-value"><%= todayCalls %></span>
-        <span class="stat-label">Today's Calls</span>
-      </div>
+<!-- Header -->
+<header class="page-header">
+  <div>
+    <h1 class="page-title">Patient Dashboard</h1>
+    <p class="page-subtitle">Real-time patient demographic registrations captured via Voice AI Agent</p>
+  </div>
+  <div class="header-actions">
+    <div class="live-badge">
+      <span class="pulse-dot"></span>
+      Voice Agent Active
     </div>
   </div>
+</header>
 
-  <!-- Search Bar -->
-  <div class="search-section">
-    <div class="search-bar">
-      <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+<!-- Stats Cards -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon stat-icon-blue">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
       </svg>
-      <input type="text" id="searchInput" placeholder="Search patients by name, phone, or email..." oninput="filterTable(this.value)">
+    </div>
+    <div class="stat-info">
+      <span class="stat-value"><%= totalPatients %></span>
+      <span class="stat-label">Total Patients</span>
     </div>
   </div>
 
-  <!-- Patients Table -->
-  <div class="table-card">
-    <div class="table-header">
-      <h2 class="table-title">Registered Patients</h2>
-      <span class="table-count"><%= patients.length %> records</span>
+  <div class="stat-card">
+    <div class="stat-icon stat-icon-green">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="8.5" cy="7" r="4"/>
+        <line x1="20" y1="8" x2="20" y2="14"/>
+        <line x1="23" y1="11" x2="17" y2="11"/>
+      </svg>
     </div>
+    <div class="stat-info">
+      <span class="stat-value"><%= todayRegistrations %></span>
+      <span class="stat-label">Today's Registrations</span>
+    </div>
+  </div>
 
-    <% if (patients.length === 0) { %>
-      <div class="empty-state">
-        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-          <circle cx="9" cy="7" r="4"/>
-          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-        </svg>
-        <h3>No patients registered yet</h3>
-        <p>Patients will appear here after they register via the voice agent.</p>
-      </div>
-    <% } else { %>
-      <div class="table-wrapper">
-        <table class="data-table" id="patientsTable">
-          <thead>
-            <tr>
-              <th>Patient</th>
-              <th>Date of Birth</th>
-              <th>Phone</th>
-              <th>Location</th>
-              <th>Insurance</th>
-              <th>Registered</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% patients.forEach(function(patient) { %>
-              <tr class="patient-row" data-search="<%= (patient.first_name + ' ' + patient.last_name + ' ' + patient.phone_number + ' ' + (patient.email || '')).toLowerCase() %>">
-                <td>
-                  <div class="patient-cell">
-                    <div class="patient-avatar">
-                      <%= patient.first_name.charAt(0) %><%= patient.last_name.charAt(0) %>
-                    </div>
-                    <div>
-                      <div class="patient-name"><%= patient.first_name %> <%= patient.last_name %></div>
-                      <div class="patient-email"><%= patient.email || 'No email' %></div>
-                    </div>
+  <div class="stat-card">
+    <div class="stat-icon stat-icon-purple">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72"/>
+      </svg>
+    </div>
+    <div class="stat-info">
+      <span class="stat-value"><%= todayCalls %></span>
+      <span class="stat-label">Today's Voice Calls</span>
+    </div>
+  </div>
+</div>
+
+<!-- Search Bar -->
+<div class="search-section">
+  <div class="search-bar">
+    <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <input type="text" id="searchInput" placeholder="Search patients by name, phone, or location..." oninput="filterTable(this.value)">
+  </div>
+</div>
+
+<!-- Patients Table -->
+<div class="table-card">
+  <div class="table-header">
+    <h2 class="table-title">Registered Patients</h2>
+    <span class="table-count"><%= patients.length %> records</span>
+  </div>
+
+  <% if (!patients || patients.length === 0) { %>
+    <div class="empty-state">
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+      <h3>No patients registered yet</h3>
+      <p>Patients will appear here automatically when they complete a phone registration or when seeded.</p>
+    </div>
+  <% } else { %>
+    <div class="table-wrapper">
+      <table class="data-table" id="patientsTable">
+        <thead>
+          <tr>
+            <th>Patient</th>
+            <th>Date of Birth</th>
+            <th>Phone</th>
+            <th>Location</th>
+            <th>Insurance</th>
+            <th>Registered</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% patients.forEach(function(patient) { %>
+            <tr class="patient-row" data-search="<%= ((patient.first_name || '') + ' ' + (patient.last_name || '') + ' ' + (patient.phone_number || '') + ' ' + (patient.city || '') + ' ' + (patient.email || '')).toLowerCase() %>">
+              <td>
+                <div class="patient-cell">
+                  <div class="patient-avatar">
+                    <%= (patient.first_name || '?').charAt(0) %><%= (patient.last_name || '?').charAt(0) %>
                   </div>
-                </td>
-                <td>
-                  <span class="text-secondary">
-                    <%= new Date(patient.date_of_birth).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %>
-                  </span>
-                </td>
-                <td>
-                  <span class="phone-badge">
-                    <%= patient.phone_number.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3') %>
-                  </span>
-                </td>
-                <td>
-                  <span class="text-secondary"><%= patient.city %>, <%= patient.state %></span>
-                </td>
-                <td>
-                  <% if (patient.insurance_provider) { %>
-                    <span class="insurance-badge"><%= patient.insurance_provider %></span>
-                  <% } else { %>
-                    <span class="text-muted">None</span>
-                  <% } %>
-                </td>
-                <td>
-                  <span class="text-secondary">
-                    <%= new Date(patient.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %>
-                  </span>
-                </td>
-                <td>
-                  <a href="/dashboard/patients/<%= patient.patient_id %>" class="btn-view">View</a>
-                </td>
-              </tr>
-            <% }); %>
-          </tbody>
-        </table>
-      </div>
-    <% } %>
-  </div>
+                  <div>
+                    <div class="patient-name"><%= patient.first_name %> <%= patient.last_name %></div>
+                    <div class="patient-email"><%= patient.email || 'No email' %></div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="text-secondary">
+                  <%= patient.date_of_birth ? new Date(patient.date_of_birth).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A' %>
+                </span>
+              </td>
+              <td>
+                <span class="phone-badge">
+                  <%= (patient.phone_number || '').replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3') %>
+                </span>
+              </td>
+              <td>
+                <span class="text-secondary"><%= patient.city %>, <%= patient.state %></span>
+              </td>
+              <td>
+                <% if (patient.insurance_provider) { %>
+                  <span class="insurance-badge"><%= patient.insurance_provider %></span>
+                <% } else { %>
+                  <span class="text-muted">Self-Pay</span>
+                <% } %>
+              </td>
+              <td>
+                <span class="text-secondary">
+                  <%= new Date(patient.created_at || patient.createdAt || Date.now()).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %>
+                </span>
+              </td>
+              <td>
+                <a href="/dashboard/patients/<%= patient.patient_id %>" class="btn-view">View</a>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>
 
-  <script>
-    function filterTable(query) {
-      const rows = document.querySelectorAll('.patient-row');
-      const q = query.toLowerCase().trim();
-      rows.forEach(row => {
-        const searchData = row.getAttribute('data-search');
-        row.style.display = searchData.includes(q) ? '' : 'none';
-      });
-    }
-  </script>
-` }) %>
+<script>
+  function filterTable(query) {
+    const rows = document.querySelectorAll('.patient-row');
+    const q = query.toLowerCase().trim();
+    rows.forEach(row => {
+      const searchData = row.getAttribute('data-search') || '';
+      row.style.display = searchData.includes(q) ? '' : 'none';
+    });
+  }
+</script>
+
+<%- include('partials/footer') %>

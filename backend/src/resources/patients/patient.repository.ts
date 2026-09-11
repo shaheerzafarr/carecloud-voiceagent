@@ -50,7 +50,7 @@ export class PatientRepository {
     }
 
     const [patients, totalCount] = await Promise.all([
-      this.Patient.find(filter).sort({ createdAt: -1 }).exec(),
+      this.Patient.find(filter).sort({ created_at: -1, createdAt: -1 }).exec(),
       this.Patient.countDocuments(filter),
     ]);
 
@@ -109,7 +109,10 @@ export class PatientRepository {
     startOfDay.setUTCHours(0, 0, 0, 0);
     return await this.Patient.countDocuments({
       deleted_at: null,
-      createdAt: { $gte: startOfDay },
+      $or: [
+        { created_at: { $gte: startOfDay } },
+        { createdAt: { $gte: startOfDay } },
+      ],
     });
   }
 }

@@ -27,10 +27,16 @@ async function bootstrap() {
     credentials: true,
   });
 
-  // Middleware to redirect base URL to /dashboard
+  // Middleware to redirect base URL to /dashboard and support both prefixed and unprefixed routes
   app.use((req: Request, res: Response, next: any) => {
-    if (req.path === '/') {
+    if (req.path === '/' || req.path === '') {
       return res.redirect('/dashboard');
+    }
+    // Transparently rewrite unprefixed /patients and /vapi calls to /api/v1
+    if (req.url.startsWith('/patients')) {
+      req.url = `/api/v1${req.url}`;
+    } else if (req.url.startsWith('/vapi')) {
+      req.url = `/api/v1${req.url}`;
     }
     next();
   });
@@ -38,9 +44,8 @@ async function bootstrap() {
   app.use(cookieParser());
   app.use(compression());
 
-  app.setGlobalPrefix(configService.get('API_PREFIX') || 'api/v1');
-  app.enableVersioning({
-    type: VersioningType.URI,
+  app.setGlobalPrefix(configService.get('API_PREFIX') || 'api/v1', {
+    exclude: ['dashboard', 'dashboard/*path'],
   });
 
   app.useGlobalPipes(

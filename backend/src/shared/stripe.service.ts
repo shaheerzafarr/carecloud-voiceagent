@@ -9,9 +9,14 @@ export class StripeService {
   private readonly stripe: Stripe;
 
   constructor(private readonly configService: ConfigService) {
-    this.stripe = new Stripe(this.configService.get('STRIPE_SECRET_KEY'), {
-      apiVersion: '2026-02-25.clover',
-    });
+    const key = this.configService.get('STRIPE_SECRET_KEY');
+    if (key) {
+      this.stripe = new Stripe(key, {
+        apiVersion: '2026-02-25.clover',
+      });
+    } else {
+      this.stripe = null as any;
+    }
   }
 
   // ========================== CUSTOMERS METHOD ========================== //

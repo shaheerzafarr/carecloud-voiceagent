@@ -46,9 +46,27 @@ export const httpExceptionHelper = (
       message = ['Too many requests.'];
       break;
 
+    case 'ConflictException':
+      httpStatusCode = HttpStatus.CONFLICT;
+      message = exception.message
+        ? returnArray(exception.message)
+        : ['Resource conflict occurred.'];
+      break;
+
+    case 'UnprocessableEntityException':
+      httpStatusCode = HttpStatus.UNPROCESSABLE_ENTITY;
+      message = exception.message
+        ? returnArray(exception.message)
+        : ['Unprocessable entity.'];
+      break;
+
     default:
-      httpStatusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-      message = ['Internal server error.'];
+      httpStatusCode = typeof exception.getStatus === 'function'
+        ? exception.getStatus()
+        : HttpStatus.INTERNAL_SERVER_ERROR;
+      message = exception.message
+        ? returnArray(exception.message)
+        : ['Internal server error.'];
   }
 
   return { httpStatusCode, message } as IExceptionResponse;

@@ -19,7 +19,7 @@ export class CallLogService {
     metadata?: Record<string, any>;
   }): Promise<ICallLog> {
     this.logger.log(`📞 Call log update: ${data.call_id} | Status: ${data.status || 'update'}`);
-    return await this.callLogRepository.update(data.call_id, data);
+    return (await this.callLogRepository.update(data.call_id, data)) as ICallLog;
   }
 
   async findByPatientId(patientId: string): Promise<ICallLog[]> {

@@ -5,7 +5,7 @@ import { AppointmentService } from '../appointments/appointment.service';
 import { CALL_STATUS } from '../call-logs/entities/call-log.entity';
 import axios from 'axios';
 import { ConfigService } from 'src/config/config.service';
-import { SYSTEM_PROMPT, VAPI_TOOLS } from './prompts/system-prompt';
+import { SYSTEM_PROMPT, VAPI_TOOLS, VAPI_ASSISTANT_CONFIG } from './prompts/system-prompt';
 
 /**
  * VapiService
@@ -299,34 +299,8 @@ export class VapiService {
     }
 
     const assistantConfig = {
-      name: 'CareCloud Patient Registration Agent',
-      model: {
-        provider: 'google',
-        model: 'gemini-2.0-flash',
-        messages: [
-          {
-            role: 'system',
-            content: SYSTEM_PROMPT,
-          },
-        ],
-        tools: VAPI_TOOLS,
-        temperature: 0.7,
-      },
-      voice: {
-        provider: '11labs',
-        voiceId: 'sarah',
-        stability: 0.5,
-        similarityBoost: 0.75,
-      },
-      firstMessage:
-        "Hi, thank you for calling CareCloud Medical Center! My name is Sarah. I'd be happy to help you get registered as a new patient. This will just take a few minutes. Let's start — what's your first and last name?",
+      ...VAPI_ASSISTANT_CONFIG,
       serverUrl: webhookUrl,
-      endCallFunctionEnabled: true,
-      transcriber: {
-        provider: 'deepgram',
-        model: 'nova-2',
-        language: 'en',
-      },
     };
 
     try {

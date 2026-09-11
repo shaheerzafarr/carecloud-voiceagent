@@ -12,11 +12,15 @@ export class ConfigService {
   constructor(
     @Inject('CONFIG_OPTIONS') private readonly options: Record<string, any>,
   ) {
-    const envFile = path.resolve(
+    let envFile = path.resolve(
       process.cwd(),
       'env',
       `.env.${process.env.NODE_ENV || 'development'}`,
     );
+
+    if (!fs.existsSync(envFile)) {
+      envFile = path.resolve(process.cwd(), 'env', '.env.development');
+    }
 
     if (!fs.existsSync(envFile)) {
       throw new Error(`Config file ${envFile} does not exist`);

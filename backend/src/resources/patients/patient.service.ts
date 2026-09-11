@@ -30,6 +30,14 @@ export class PatientService {
    * - Logs the created patient data (observability requirement)
    */
   async createPatient(createPatientDto: CreatePatientDto): Promise<IPatient> {
+    // Duplicate Detection (Assessment Requirement)
+    const existing = await this.patientRepository.findByPhone(createPatientDto.phone_number);
+    if (existing) {
+      throw new ConflictException(
+        `A patient with phone number ${createPatientDto.phone_number} already exists (${existing.first_name} ${existing.last_name})`,
+      );
+    }
+
     // Convert date_of_birth string to Date
     const patientData: any = {
       ...createPatientDto,

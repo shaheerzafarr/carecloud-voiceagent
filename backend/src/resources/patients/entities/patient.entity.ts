@@ -13,16 +13,16 @@ import { SEX } from '../enums/patient.enum';
  * - patient_id (UUID) used as the public identifier instead of MongoDB _id
  * - phone_number has a unique index for duplicate detection (bonus feature)
  * - deleted_at enables soft-delete (assessment requirement)
- * - timestamps: true auto-manages createdAt/updatedAt
+ * - timestamps creates created_at / updated_at per spec
  */
 @Schema({
   collection: 'patients',
-  timestamps: true,
+  timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
   toJSON: {
     virtuals: true,
     transform: (_doc, ret) => {
-      delete ret._id;
-      delete ret.__v;
+      delete (ret as any)._id;
+      delete (ret as any).__v;
       return ret;
     },
   },
@@ -129,16 +129,17 @@ class Patient {
 const PatientSchema = SchemaFactory.createForClass(Patient);
 
 /**
- * Index for duplicate detection:
- * Allows quick lookup by phone_number to check if a patient already exists.
- */
-PatientSchema.index({ phone_number: 1 });
-
-/**
  * Compound index for common query patterns:
  * - Filter by last_name + date_of_birth
  */
 PatientSchema.index({ last_name: 1, date_of_birth: 1 });
+
+PatientSchema.virtual('createdAt').get(function (this: any) {
+  return this.created_at;
+});
+PatientSchema.virtual('updatedAt').get(function (this: any) {
+  return this.updated_at;
+});
 
 type IPatient = HydratedDocument<Patient>;
 export { IPatient, Patient, PatientSchema };

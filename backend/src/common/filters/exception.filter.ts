@@ -82,9 +82,11 @@ export class AnyExceptionFilter implements ExceptionFilter {
     );
 
     /**
-     * Send Response
+     * Send Response — ensures standard { data: null, error: ... } envelope
      */
     response.status(httpStatusCode).json({
+      data: null,
+      error: error.message.error.join(', '),
       ...error,
       statusCode: httpStatusCode,
     });

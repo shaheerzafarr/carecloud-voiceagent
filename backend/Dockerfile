@@ -37,4 +37,4 @@ COPY --from=builder /app/env ./env
 
 EXPOSE 8000 5006 5008
 
-CMD ["node", "dist/src/main.js"]
+CMD ["node", "dist/main.js"]

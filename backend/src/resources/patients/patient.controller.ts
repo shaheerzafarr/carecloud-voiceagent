@@ -60,8 +60,7 @@ export class PatientController {
   @ApiResponse({ status: 200, description: 'List of patients' })
   async getAllPatients(@Query() query: QueryPatientDto) {
     const result = await this.patientService.getAllPatients(query);
-
-    return { data: result, error: null };
+    return { data: result.patients, total: result.totalCount, error: null };
   }
 
   /**
