@@ -8,4 +8,6 @@ frontend/dist/
 *.log
 .DS_Store
 *.env.local
+*.pdf
+pdf_content.txt
 
