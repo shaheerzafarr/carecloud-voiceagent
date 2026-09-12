@@ -28,7 +28,10 @@ if (fs.existsSync(envProdPath)) {
 
 async function main() {
   const vapiApiKey = process.env.VAPI_API_KEY;
-  const serverUrl = process.argv[2] || process.env.WEB_HOSTED_URL || 'http://localhost:5006';
+  const serverUrl =
+    process.argv[2] ||
+    process.env.WEB_HOSTED_URL ||
+    'https://carecloud-voiceagent-yzij.onrender.com';
 
   if (!vapiApiKey) {
     console.error('❌ Error: VAPI_API_KEY environment variable is missing.');
@@ -45,6 +48,7 @@ async function main() {
   const assistantConfig = getAssistantConfig();
   const assistantPayload = {
     ...assistantConfig,
+    serverUrl: webhookUrl,
     server: {
       url: webhookUrl,
     },

@@ -7,7 +7,7 @@ A production-ready **Voice AI Telephony & Patient Intake System** designed for t
 ## 🚀 Live Demo & Submission Details
 
 * **GitHub Repository**: [https://github.com/shaheerzafarr/carecloud-voiceagent](https://github.com/shaheerzafarr/carecloud-voiceagent)
-* **Inbound Phone Number**: **`+1 (571) 364-0246`** *(Dialable U.S. line, powered by Deepgram Nova-3 + GPT-4o-mini)*
+* **Inbound Phone Number**: **`+1 (571) 386-0275`** *(Dialable U.S. line, powered by Deepgram Nova-3 + GPT-4o-mini)*
 * **Live Clinical Web Portal**: [https://carecloud-voiceagent-yzij.onrender.com/](https://carecloud-voiceagent-yzij.onrender.com/)
 * **Server-Rendered Dashboard**: [https://carecloud-voiceagent-yzij.onrender.com/dashboard](https://carecloud-voiceagent-yzij.onrender.com/dashboard)
 * **REST API Base URL**: `https://carecloud-voiceagent-yzij.onrender.com/api/v1`
@@ -126,7 +126,7 @@ npm run test:e2e
 
 ## 📞 Voice Agent Telephony Specs
 
-- **Inbound US Phone Number**: Configured via Vapi.ai with Twilio carrier integration (`+1 (571) 364-0246`).
+- **Inbound US Phone Number**: Configured via Vapi.ai with Twilio carrier integration (`+1 (571) 386-0275`).
 - **LLM Reasoning**: OpenAI GPT-4o-mini via Vapi orchestrator.
 - **Transcriber**: Deepgram Nova-3 with custom acoustic keyword boosting.
   1. `checkExistingPatient(phone_number)`: Queries Atlas database by caller ID. If found, retrieves name and existing records.

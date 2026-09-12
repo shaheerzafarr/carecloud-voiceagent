@@ -432,6 +432,7 @@ export class VapiService {
 
     const assistantConfig = {
       ...getAssistantConfig(),
+      serverUrl: webhookUrl,
       server: {
         url: webhookUrl,
       },
