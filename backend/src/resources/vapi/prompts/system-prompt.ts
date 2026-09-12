@@ -296,9 +296,6 @@ export function getAssistantConfig() {
     },
     startSpeakingPlan: {
       waitSeconds: 0.4,
-      smartEndpointingPlan: {
-        provider: 'vapi',
-      },
     },
   };
 }
